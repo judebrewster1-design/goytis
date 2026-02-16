@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOYTIS | Ultra-Premium Trading System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        /* ==================== VARIABLES ==================== */
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #0f1420;
+            --bg-tertiary: #141829;
+            --bg-card: #1a1f35;
+            --bg-card-hover: #1f2540;
+            
+            --accent-primary: #00f5c4;
+            --accent-secondary: #7b4cff;
+            --accent-tertiary: #ff6b35;
+            
+            --text-primary: #e8ecf4;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            
+            --border-primary: rgba(255, 255, 255, 0.05);
+            --border-accent: rgba(0, 245, 196, 0.2);
+            
+            --success: #00e676;
+            --danger: #ff4444;
+            --warning: #ffb020;
+            --info: #2196f3;
+            
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.4);
+            
+            --glow-primary: 0 0 40px rgba(0, 245, 196, 0.2);
+            --glow-accent: 0 0 40px rgba(123, 76, 255, 0.2);
+        }
+        
+        /* ==================== RESET & BASE ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* ==================== ANIMATED BACKGROUND ==================== */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .bg-gradient {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        .bg-gradient-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0, 245, 196, 0.15) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+        
+        .bg-gradient-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(123, 76, 255, 0.12) 0%, transparent 70%);
+            bottom: -50px;
+            left: -50px;
+            animation-delay: 5s;
+        }
+        
+        .bg-gradient-3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-30px, -30px) scale(1.05); }
+            50% { transform: translate(30px, 30px) scale(0.95); }
+            75% { transform: translate(-15px, 20px) scale(1.02); }
+        }
+        
+        /* ==================== GRID OVERLAY ==================== */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 245, 196, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 196, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            pointer-events: none;
+            animation: gridPulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* ==================== HEADER / NAVBAR ==================== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-primary);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.75rem;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+        }
+        
+        .logo-text {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: var(--glow-primary);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 230, 118, 0.1);
+            border: 1px solid rgba(0, 230, 118, 0.3);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .status-badge:hover {
+            background: rgba(0, 230, 118, 0.15);
+            transform: translateY(-1px);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7);
+            }
+            50% { 
+                opacity: 0.8;
+                box-shadow: 0 0 0 6px rgba(0, 230, 118, 0);
+            }
+        }
+        
+        .last-update {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* ==================== MAIN CONTAINER ==================== */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* ==================== HERO SECTION ==================== */
+        .hero {
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+        }
+        
+        /* ==================== GRID LAYOUTS ==================== */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        
+        @media (max-width: 1200px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .hero-title { font-size: 2rem; }
+        }
+        
+        /* ==================== CARDS ==================== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .card:hover {
+            border-color: var(--border-accent);
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl), var(--glow-primary);
+        }
+        
+        .card:hover::before {
+            opacity: 1;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .card-change {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        .positive { color: var(--success); }
+        .negative { color: var(--danger); }
+        
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .badge-success {
+            background: rgba(0, 230, 118, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(0, 230, 118, 0.3);
+        }
+        
+        .badge-danger {
+            background: rgba(255, 68, 68, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+        
+        .badge-primary {
+            background: rgba(0, 245, 196, 0.15);
+            color: var(--accent-primary);
+            border: 1px solid rgba(0, 245, 196, 0.3);
+        }
+        
+        /* ==================== CHART CONTAINERS ==================== */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin-top: 1rem;
+        }
+        
+        .chart-container.lg {
+            height: 450px;
+        }
+        
+        .chart-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        /* ==================== INFO ROWS ==================== */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .info-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* ==================== ADDRESS BOX ==================== */
+        .address-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-primary);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .address-box:hover {
+            border-color: var(--border-accent);
+            background: rgba(0, 0, 0, 0.4);
+        }
+        
+        .address-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-primary);
+            word-break: break-all;
+            flex: 1;
+        }
+        
+        .copy-btn {
+            background: rgba(0, 245, 196, 0.1);
+            border: 1px solid rgba(0, 245, 196, 0.3);
+            color: var(--accent-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(0, 245, 196, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* ==================== LOADING & ERROR STATES ==================== */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            gap: 1.5rem;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 245, 196, 0.1);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        
+        .error {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: var(--danger);
+            margin: 1rem 0;
+        }
+        
+        /* ==================== FOOTER ==================== */
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid var(--border-primary);
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--accent-primary);
+        }
+        
+        /* ==================== UTILITIES ==================== */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        
+        /* ==================== ANIMATIONS ==================== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .logo {
+                font-size: 1.25rem;
+            }
+            
+            .card-value {
+                font-size: 1.75rem;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+        }
+        
+        /* ==================== SECTION HEADERS ==================== */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 28px;
+            background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animated">
+        <div class="bg-gradient bg-gradient-1"></div>
+        <div class="bg-gradient bg-gradient-2"></div>
+        <div class="bg-gradient bg-gradient-3"></div>
+    </div>
+    
+    <!-- Grid Overlay -->
+    <div class="grid-overlay"></div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">💎</div>
+                <span class="logo-text">GOYTIS</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    <span id="status-text">Live System</span>
+                </div>
+                <div class="last-update" id="last-update">Last update: Never</div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Container -->
+    <main class="container">
+        
+        <!-- Key Metrics Grid -->
+        <div class="grid grid-4 fade-in">
+            <!-- Token Price Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">GOYTIS Price</div>
+                        <div class="card-value" id="token-price">$0.000000</div>
+                        <div class="card-change" id="price-change">
+                            <span>+0.00%</span>
+                        </div>
+                    </div>
+                    <span class="badge badge-primary">LIVE</span>
+                </div>
+            </div>
+            
+            <!-- Market Cap Card -->
+            <div class="card">
+                <div class="card-title">Market Cap</div>
+                <div class="card-value" id="market-cap">$0</div>
+                <div class="card-change">
+                    <span style="color: var(--text-muted)">Fully Diluted</span>
+                </div>
+            </div>
+            
+            <!-- 24h Volume Card -->
+            <div class="card">
+                <div class="card-title">24h Volume</div>
+                <div class="card-value" id="volume-24h">$0</div>
+                <div class="card-change" id="volume-trend">
+                    <span style="color: var(--text-muted)">Trading Activity</span>
+                </div>
+            </div>
+            
+            <!-- Liquidity Card -->
+            <div class="card">
+                <div class="card-title">Liquidity</div>
+                <div class="card-value" id="liquidity">$0</div>
+                <div class="card-change">
+                    <span style="color: var(--text-muted)">In Pools</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="section-header">
+            <h2 class="section-title">Live Analytics</h2>
+        </div>
+        
+        <div class="grid grid-2 fade-in">
+            <!-- Price Chart -->
+            <div class="card">
+                <div class="section-title" style="font-size: 1.25rem; margin-bottom: 1rem;">
+                    Price Chart (24h)
+                </div>
+                <div class="chart-container lg">
+                    <canvas id="priceChart"></canvas>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">24h High</span>
+                    <span class="info-value positive" id="price-high">$0.000000</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">24h Low</span>
+                    <span class="info-value negative" id="price-low">$0.000000</span>
+                </div>
+            </div>
+            
+            <!-- Vault Performance Chart -->
+            <div class="card">
+                <div class="section-title" style="font-size: 1.25rem; margin-bottom: 1rem;">
+                    Vault Performance
+                </div>
+                <div class="chart-container lg">
+                    <canvas id="vaultChart"></canvas>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Current Balance</span>
+                    <span class="info-value" id="vault-balance-text">0.000 SOL</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">USD Value</span>
+                    <span class="info-value" id="vault-usd-text">$0.00</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Token & Vault Details -->
+        <div class="grid grid-2 fade-in">
+            <!-- Token Information -->
+            <div class="card">
+                <div class="section-title" style="font-size: 1.25rem; margin-bottom: 1rem;">
+                    Token Information
+                </div>
+                
+                <div class="address-box">
+                    <code class="address-text" id="token-address-full">AzKQsfrcC1mT1PF1xZwUaMKsCaGtSzHf4aFXD9YFpump</code>
+                    <button class="copy-btn" onclick="copyToClipboard('AzKQsfrcC1mT1PF1xZwUaMKsCaGtSzHf4aFXD9YFpump', this)">Copy CA</button>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Symbol</span>
+                    <span class="info-value" id="token-symbol">GOYTIS</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Name</span>
+                    <span class="info-value" id="token-name">GOYTIS</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Price Change (1h)</span>
+                    <span class="info-value" id="price-1h">+0.00%</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Price Change (5m)</span>
+                    <span class="info-value" id="price-5m">+0.00%</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">24h Transactions</span>
+                    <span class="info-value" id="tx-count">0</span>
+                </div>
+            </div>
+            
+            <!-- Vault Wallet -->
+            <div class="card">
+                <div class="section-title" style="font-size: 1.25rem; margin-bottom: 1rem;">
+                    Profit Vault Wallet
+                </div>
+                
+                <div class="address-box">
+                    <code class="address-text" id="vault-address-full">8SREmMsP2RLjcooDifmdFwF4RkmJ4XMZCzeZPK7LqP1K</code>
+                    <button class="copy-btn" onclick="copyToClipboard('8SREmMsP2RLjcooDifmdFwF4RkmJ4XMZCzeZPK7LqP1K', this)">Copy Address</button>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">SOL Balance</span>
+                    <span class="info-value" id="vault-sol">0.000 SOL</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">USD Value</span>
+                    <span class="info-value" id="vault-usd">$0.00</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Last Updated</span>
+                    <span class="info-value" id="vault-updated">Never</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Profit Share</span>
+                    <span class="info-value" style="color: var(--accent-primary);">1% Daily Auto-Send</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Settlement</span>
+                    <span class="info-value" style="color: var(--text-muted);">Midnight UTC</span>
+                </div>
+            </div>
+        </div>
+        
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#" class="footer-link">Documentation</a>
+            <a href="https://t.me/" class="footer-link" target="_blank">Telegram Bot</a>
+            <a href="#" class="footer-link">API</a>
+            <a href="#" class="footer-link">GitHub</a>
+        </div>
+        <p style="font-size: 0.875rem;">© 2025 GOYTIS Trading System | Built on Solana</p>
+        <p style="font-size: 0.75rem; margin-top: 0.5rem;">Not financial advice. Cryptocurrency trading carries risk. Trade responsibly.</p>
+    </footer>
+    
+    <script>
+        // ==================== CONFIGURATION ====================
+        const API_BASE_URL = window.location.origin; // Works with Cloudflare Tunnel
+        const UPDATE_INTERVAL = 30000; // 30 seconds
+        
+        // ==================== STATE ====================
+        let priceChart, vaultChart;
+        let updateTimer;
+        
+        // ==================== UTILITIES ====================
+        const formatPrice = (price) => {
+            if (!price || price === 0) return '$0.000000';
+            if (price >= 1) return '$' + price.toFixed(2);
+            if (price >= 0.01) return '$' + price.toFixed(4);
+            return '$' + price.toFixed(8);
+        };
+        
+        const formatLarge = (num) => {
+            if (!num || num === 0) return '$0';
+            if (num >= 1e9) return '$' + (num / 1e9).toFixed(2) + 'B';
+            if (num >= 1e6) return '$' + (num / 1e6).toFixed(2) + 'M';
+            if (num >= 1e3) return '$' + (num / 1e3).toFixed(1) + 'K';
+            return '$' + num.toFixed(0);
+        };
+        
+        const formatChange = (change) => {
+            if (!change) return '+0.00%';
+            const sign = change >= 0 ? '+' : '';
+            return sign + change.toFixed(2) + '%';
+        };
+        
+        const formatTime = (isoString) => {
+            if (!isoString) return 'Unknown';
+            const date = new Date(isoString);
+            return date.toLocaleTimeString();
+        };
+        
+        const formatDateTime = (isoString) => {
+            if (!isoString) return 'Never';
+            const date = new Date(isoString);
+            return date.toLocaleString();
+        };
+        
+        const copyToClipboard = (text, button) => {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'rgba(0, 230, 118, 0.2)';
+                button.style.borderColor = 'rgba(0, 230, 118, 0.5)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                    button.style.borderColor = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                button.textContent = 'Error!';
+            });
+        };
+        
+        // ==================== CHART INITIALIZATION ====================
+        const initCharts = () => {
+            const chartConfig = {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        borderColor: '#00f5c4',
+                        backgroundColor: (context) => {
+                            const ctx = context.chart.ctx;
+                            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                            gradient.addColorStop(0, 'rgba(0, 245, 196, 0.3)');
+                            gradient.addColorStop(1, 'rgba(0, 245, 196, 0)');
+                            return gradient;
+                        },
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#00f5c4',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 20, 32, 0.95)',
+                            borderColor: '#00f5c4',
+                            borderWidth: 1,
+                            titleColor: '#9ca3af',
+                            bodyColor: '#e8ecf4',
+                            padding: 12,
+                            displayColors: false,
+                            titleFont: { family: 'Inter', size: 11 },
+                            bodyFont: { family: 'JetBrains Mono', size: 13, weight: '600' }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { 
+                                color: 'rgba(255, 255, 255, 0.03)',
+                                drawBorder: false 
+                            },
+                            ticks: { 
+                                color: '#6b7280',
+                                font: { family: 'JetBrains Mono', size: 10 },
+                                maxTicksLimit: 8
+                            }
+                        },
+                        y: {
+                            grid: { 
+                                color: 'rgba(255, 255, 255, 0.03)',
+                                drawBorder: false 
+                            },
+                            ticks: { 
+                                color: '#6b7280',
+                                font: { family: 'JetBrains Mono', size: 10 },
+                                callback: (value) => {
+                                    if (value >= 1) return '$' + value.toFixed(2);
+                                    return '$' + value.toFixed(6);
+                                }
+                            },
+                            position: 'right'
+                        }
+                    }
+                }
+            };
+            
+            // Price Chart
+            const priceCtx = document.getElementById('priceChart').getContext('2d');
+            priceChart = new Chart(priceCtx, JSON.parse(JSON.stringify(chartConfig)));
+            
+            // Vault Chart (with different color)
+            const vaultCtx = document.getElementById('vaultChart').getContext('2d');
+            const vaultConfig = JSON.parse(JSON.stringify(chartConfig));
+            vaultConfig.data.datasets[0].borderColor = '#7b4cff';
+            vaultConfig.data.datasets[0].pointHoverBackgroundColor = '#7b4cff';
+            vaultConfig.data.datasets[0].backgroundColor = (context) => {
+                const ctx = context.chart.ctx;
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(123, 76, 255, 0.3)');
+                gradient.addColorStop(1, 'rgba(123, 76, 255, 0)');
+                return gradient;
+            };
+            vaultChart = new Chart(vaultCtx, vaultConfig);
+        };
+        
+        // ==================== DATA FETCHING ====================
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/data`);
+                if (!response.ok) throw new Error('Failed to fetch data');
+                
+                const data = await response.json();
+                updateUI(data);
+                
+                document.getElementById('status-text').textContent = 'Live System';
+                
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('status-text').textContent = 'Connection Error';
+            }
+        };
+        
+        // ==================== UI UPDATE ====================
+        const updateUI = (data) => {
+            // Update token data
+            if (data.goytis) {
+                const g = data.goytis;
+                
+                // Price
+                document.getElementById('token-price').textContent = formatPrice(g.price_usd);
+                
+                // Market cap
+                document.getElementById('market-cap').textContent = formatLarge(g.market_cap);
+                
+                // Volume
+                document.getElementById('volume-24h').textContent = formatLarge(g.volume_24h);
+                
+                // Liquidity
+                document.getElementById('liquidity').textContent = formatLarge(g.liquidity);
+                
+                // Price change 24h
+                const priceChange = document.getElementById('price-change');
+                priceChange.innerHTML = formatChange(g.price_change_24h);
+                priceChange.className = 'card-change ' + (g.price_change_24h >= 0 ? 'positive' : 'negative');
+                
+                // Price change 1h
+                const price1h = document.getElementById('price-1h');
+                price1h.textContent = formatChange(g.price_change_1h);
+                price1h.className = 'info-value ' + (g.price_change_1h >= 0 ? 'positive' : 'negative');
+                
+                // Price change 5m
+                const price5m = document.getElementById('price-5m');
+                price5m.textContent = formatChange(g.price_change_5m);
+                price5m.className = 'info-value ' + (g.price_change_5m >= 0 ? 'positive' : 'negative');
+                
+                // Symbol & Name
+                document.getElementById('token-symbol').textContent = g.symbol;
+                document.getElementById('token-name').textContent = g.name;
+                
+                // Transactions
+                document.getElementById('tx-count').textContent = (g.transactions_24h || 0).toLocaleString();
+                
+                // High/Low (estimated)
+                const high = g.price_usd * (1 + Math.abs(g.price_change_24h) / 100);
+                const low = g.price_usd / (1 + Math.abs(g.price_change_24h) / 100);
+                document.getElementById('price-high').textContent = formatPrice(high);
+                document.getElementById('price-low').textContent = formatPrice(low);
+            }
+            
+            // Update vault data
+            if (data.vault) {
+                const v = data.vault;
+                document.getElementById('vault-sol').textContent = v.sol_balance.toFixed(4) + ' SOL';
+                document.getElementById('vault-usd').textContent = '$' + v.usd_value.toFixed(2);
+                document.getElementById('vault-balance-text').textContent = v.sol_balance.toFixed(4) + ' SOL';
+                document.getElementById('vault-usd-text').textContent = '$' + v.usd_value.toFixed(2);
+                document.getElementById('vault-updated').textContent = formatTime(v.last_updated);
+            }
+            
+            // Update price chart
+            if (data.price_history && data.price_history.length > 0) {
+                const labels = data.price_history.map(h => formatTime(h[0]));
+                const prices = data.price_history.map(h => h[1]);
+                
+                priceChart.data.labels = labels;
+                priceChart.data.datasets[0].data = prices;
+                priceChart.update('none');
+            }
+            
+            // Update vault chart
+            if (data.vault_history && data.vault_history.length > 0) {
+                const labels = data.vault_history.map(h => formatTime(h[0]));
+                const balances = data.vault_history.map(h => h[1]);
+                
+                vaultChart.data.labels = labels;
+                vaultChart.data.datasets[0].data = balances;
+                vaultChart.update('none');
+            }
+            
+            // Update last update time
+            document.getElementById('last-update').textContent = 'Last update: ' + formatTime(data.last_update);
+        };
+        
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 GOYTIS Frontend Initialized');
+            console.log('📡 API Base URL:', API_BASE_URL);
+            
+            // Initialize charts
+            initCharts();
+            
+            // Initial data fetch
+            fetchData();
+            
+            // Set up periodic updates
+            updateTimer = setInterval(fetchData, UPDATE_INTERVAL);
+            
+            console.log('✅ Auto-update enabled (30s interval)');
+        });
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (updateTimer) clearInterval(updateTimer);
+        });
+    </script>
+</body>
+</html>
